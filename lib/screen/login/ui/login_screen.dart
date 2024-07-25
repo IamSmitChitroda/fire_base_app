@@ -35,6 +35,16 @@ class LoginScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        LocalNotificationService.showNotification(
+                          id: 1,
+                          title: 'Notification Title',
+                          body: 'Notification Body',
+                        );
+                      },
+                      child: const Text('Show Notification'),
+                    ),
                     SizedBox(height: size.height * 0.1),
                     const Text(
                       'Login into\nyour account',

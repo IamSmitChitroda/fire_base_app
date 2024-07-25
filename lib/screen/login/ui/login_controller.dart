@@ -31,6 +31,13 @@ class LoginController extends GetxController {
     isLoading(false);
   }
 
+  Future<void> signOut() async {
+    isLoading(true);
+    await AuthServices.instance.signOut();
+    isLoading(false);
+    Get.offAllNamed(Routes.login);
+  }
+
   void toggleObscure() {
     isObscure(!isObscure.value);
   }

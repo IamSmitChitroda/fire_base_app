@@ -1,8 +1,75 @@
 import 'package:fire_base_app/headers.dart';
 import 'package:fire_base_app/modal/note_modal.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  /*notification() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    RemoteMessage? message = await messaging.getInitialMessage();
+
+    if (messaging != null) {
+      if (message != null) {
+        Logger().i(message.data);
+        FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+      } else {
+        Logger().e("message is null !!!");
+      }
+    } else {
+      Logger().e('firebase message is null !!!');
+    }
+  }
+
+  void handleMessage(RemoteMessage message) {
+    Logger().d("onMessageOpenApp${message.notification!.body}");
+  }*/
+
+  notification() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    Logger().i('Notification${settings.authorizationStatus}');
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   Logger().d("onMessage: ${message.data}");
+    // });
+
+    /*FirebaseMessaging.onBackgroundMessage(
+      (RemoteMessage message) async {
+        Logger().d('Handling a background message: ${message.messageId}');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+        Logger().i('Message data: ${message.data}');
+      },
+    );*/
+
+    FirebaseMessaging.onMessageOpenedApp.listen(
+      (RemoteMessage message) async {
+        Logger().d('Handling a background message: ${message.messageId}');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+        Logger().i('Message data: ${message.data}');
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,30 +86,45 @@ class HomeScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: StreamBuilder(
-                  stream: FirestoreServices.instance.getNotes(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<NoteModal> notes = snapshot.data!.docs
-                              .map(
-                                (e) => NoteModal.fromMap(
-                                  e.data(),
-                                ),
-                              )
-                              .toList() ??
-                          [];
-                      return ListView.builder(
-                        itemCount: notes.length,
-                        itemBuilder: (context, index) => ListTile(
-                          title: Text(
-                            notes[index].title.toString(),
-                          ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text('Home Screen'),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: AuthServices.instance.signOut,
+                          icon: const Icon(Icons.logout),
                         ),
-                      );
-                    } else {
-                      return const LoadingView();
-                    }
-                  },
+                      ],
+                    ),
+                    Expanded(
+                      child: StreamBuilder(
+                        stream: FirestoreServices.instance.getNotes(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<NoteModal> notes = snapshot.data!.docs
+                                .map(
+                                  (e) => NoteModal.fromMap(
+                                    e.data(),
+                                  ),
+                                )
+                                .toList();
+                            return ListView.builder(
+                              itemCount: notes.length,
+                              itemBuilder: (context, index) => ListTile(
+                                title: Text(
+                                  notes[index].title.toString(),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return const LoadingView();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
               if (homeController.isLoading.value) const LoadingView(),

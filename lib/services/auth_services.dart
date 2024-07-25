@@ -67,5 +67,8 @@ class AuthServices {
     }
   }
 
-  addUser() {}
+  signOut() async {
+    await auth.signOut();
+    await GoogleSignIn().signOut();
+  }
 }
