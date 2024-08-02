@@ -1,4 +1,6 @@
 import 'package:fire_base_app/headers.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:logger/logger.dart';
 
 class AuthServices {
   AuthServices._();
@@ -70,5 +72,28 @@ class AuthServices {
   signOut() async {
     await auth.signOut();
     await GoogleSignIn().signOut();
+  }
+
+  signInWithFacebook() async {
+    Logger().i("facebookSignIn called !!!");
+    try {
+      FacebookAuth facebookAuth = FacebookAuth.instance;
+      LoginResult loginResult = await facebookAuth.login();
+      if (loginResult.accessToken != null) {
+        Logger().i('Login Result: ${loginResult.accessToken!.tokenString}');
+        OAuthCredential facebookAuthCredential =
+            FacebookAuthProvider.credential(
+                loginResult.accessToken!.tokenString);
+
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithCredential(facebookAuthCredential);
+
+        return userCredential.user;
+      } else {
+        Logger().e(' Facebook login failed: ${loginResult.message}');
+      }
+    } catch (e) {
+      Logger().e(e.toString());
+    }
   }
 }

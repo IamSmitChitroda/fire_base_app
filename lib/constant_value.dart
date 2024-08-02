@@ -8,3 +8,4 @@ const String bgPath = 'assets/images/bg.png';
 const String googleLogo = 'assets/images/google_logo.png';
 const String fbLogo = 'assets/images/fb_logo.png';
 const String microsoftLogo = 'assets/images/microsoft_logo.png';
+const String appleLogo = 'assets/images/apple_logo.png';

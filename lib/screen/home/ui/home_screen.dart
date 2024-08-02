@@ -2,7 +2,6 @@ import 'package:fire_base_app/headers.dart';
 import 'package:fire_base_app/modal/note_modal.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:logger/logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -99,30 +98,31 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     Expanded(
-                      child: StreamBuilder(
-                        stream: FirestoreServices.instance.getNotes(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List<NoteModal> notes = snapshot.data!.docs
-                                .map(
-                                  (e) => NoteModal.fromMap(
-                                    e.data(),
-                                  ),
-                                )
-                                .toList();
-                            return ListView.builder(
-                              itemCount: notes.length,
-                              itemBuilder: (context, index) => ListTile(
-                                title: Text(
-                                  notes[index].title.toString(),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return const LoadingView();
-                          }
-                        },
-                      ),
+                      child: Container(),
+                      // child: StreamBuilder(
+                      //   stream: FirestoreServices.instance.getNotes(),
+                      //   builder: (context, snapshot) {
+                      //     if (snapshot.hasData) {
+                      //       List<NoteModal> notes = snapshot.data!.docs
+                      //           .map(
+                      //             (e) => NoteModal.fromMap(
+                      //               e.data(),
+                      //             ),
+                      //           )
+                      //           .toList();
+                      //       return ListView.builder(
+                      //         itemCount: notes.length,
+                      //         itemBuilder: (context, index) => ListTile(
+                      //           title: Text(
+                      //             notes[index].title.toString(),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     } else {
+                      //       return const LoadingView();
+                      //     }
+                      //   },
+                      // ),
                     ),
                   ],
                 ),

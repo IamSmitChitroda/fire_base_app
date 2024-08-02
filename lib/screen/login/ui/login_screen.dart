@@ -7,10 +7,12 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-
     final LoginController loginController = Get.put(LoginController());
     Size size = MediaQuery.sizeOf(context);
+    GlobalKey<FormState> emailKey = GlobalKey<FormState>();
+    GlobalKey<FormState> passwordKey = GlobalKey<FormState>();
+    const emailAutovalidateMode = AutovalidateMode.always;
+    const passwordAutovalidateMode = AutovalidateMode.always;
     return Obx(
       () => GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -56,44 +58,54 @@ class LoginScreen extends StatelessWidget {
                       textAlign: TextAlign.left,
                     ),
                     SizedBox(height: size.height * 0.1),
-                    TextFormField(
-                      controller: loginController.emailController,
-                      decoration: const InputDecoration(
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: secondaryColor,
-                        ),
-                        labelText: 'Email',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                    Form(
+                      autovalidateMode: emailAutovalidateMode,
+                      child: TextFormField(
+                        controller: loginController.emailController,
+                        decoration: const InputDecoration(
+                          labelStyle: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: secondaryColor,
+                          ),
+                          labelText: 'Email',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
                           ),
                         ),
+                        validator: loginController.validateEmail,
+                        keyboardType: TextInputType.emailAddress,
                       ),
                     ),
+
                     SizedBox(height: size.height * 0.03),
-                    TextField(
-                      controller: loginController.passwordController,
-                      obscureText: loginController.isObscure.value,
-                      decoration: InputDecoration(
-                        labelStyle: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: secondaryColor,
-                        ),
-                        labelText: 'Password',
-                        suffixIcon: IconButton(
-                          onPressed: loginController.toggleObscure,
-                          icon: loginController.isObscure.value
-                              ? const Icon(Icons.visibility_off)
-                              : const Icon(Icons.visibility),
-                        ),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                    Form(
+                      autovalidateMode: passwordAutovalidateMode,
+                      child: TextFormField(
+                        controller: loginController.passwordController,
+                        obscureText: loginController.isObscure.value,
+                        decoration: InputDecoration(
+                          labelStyle: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: secondaryColor,
+                          ),
+                          labelText: 'Password',
+                          suffixIcon: IconButton(
+                            onPressed: loginController.toggleObscure,
+                            icon: loginController.isObscure.value
+                                ? const Icon(Icons.visibility_off)
+                                : const Icon(Icons.visibility),
+                          ),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
                           ),
                         ),
+                        validator: loginController.validatePassword,
                       ),
                     ),
                     SizedBox(height: size.height * 0.03),
@@ -111,24 +123,33 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: size.height * 0.06),
-                    GestureDetector(
-                      onTap: loginController.loginWithEmailAndPassword,
-                      child: Container(
-                        width: double.infinity,
-                        height: 50,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: primaryColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                    // GestureDetector(
+                    //   onTap: loginController.loginWithEmailAndPassword,
+                    //   child: Container(
+                    //     width: double.infinity,
+                    //     height: 50,
+                    //     alignment: Alignment.center,
+                    //     decoration: BoxDecoration(
+                    //       color: primaryColor,
+                    //       borderRadius: BorderRadius.circular(10),
+                    //     ),
+                    //     child: const Text(
+                    //       'Login',
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontSize: 20,
+                    //         fontWeight: FontWeight.w600,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: FilledButton(
+                        onPressed: () {},
+                        child: const Text('Login'),
                       ),
                     ),
                     SizedBox(height: size.height * 0.03),
@@ -147,7 +168,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: loginController.facebookSignIn,
                           icon: Padding(
                             padding: const EdgeInsets.only(),
                             child: Image.asset(
@@ -165,6 +186,17 @@ class LoginScreen extends StatelessWidget {
                               height: 26,
                               width: 26,
                               microsoftLogo,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: Padding(
+                            padding: const EdgeInsets.only(),
+                            child: Image.asset(
+                              height: 26,
+                              width: 26,
+                              'assets/images/apple_logo.png',
                             ),
                           ),
                         ),

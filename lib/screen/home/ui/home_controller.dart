@@ -8,8 +8,8 @@ class HomeController extends GetxController {
   getNotes() async {
     isLoading(true);
     try {
-      Stream<QuerySnapshot<Map<String, dynamic>>> data =
-          FirestoreServices.instance.getNotes();
+      // Stream<QuerySnapshot<Map<String, dynamic>>> data =
+      //     FirestoreServices.instance.getNotes();
     } catch (e) {
       Get.snackbar('Controller Note Get Error', e.toString(),
           colorText: Colors.white, backgroundColor: Colors.red);

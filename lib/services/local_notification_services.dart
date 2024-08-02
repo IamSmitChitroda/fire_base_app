@@ -12,16 +12,17 @@ class LocalNotificationService {
 
     // Note: permissions needed on iOS
 
-    // const IOSInitializationSettings initializationSettingsIOS =
-    // IOSInitializationSettings(
-    //   requestAlertPermission: true,
-    //   requestBadgePermission: true,
-    //   requestSoundPermission: true,
-    // );
-
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
     const InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+
       // iOS: initializationSettingsIOS,
     );
 
@@ -29,7 +30,10 @@ class LocalNotificationService {
   }
 
   static Future<void> showNotification(
-      {int id = 0, String? title, String? body, String? payload}) async {
+      {int id = 0,
+      String title = "title",
+      String body = "Body",
+      String payload = "payload"}) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'your channel id',
